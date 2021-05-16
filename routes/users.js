@@ -16,6 +16,7 @@ router.post("/register", async(req,res)=>{
  try {
   const db = client.db("b19we");
   const hash = await hashing(req.body.password)
+  console.log("hash",hash)
   req.body.password = hash;
   const user = await db.collection("users").insertOne(req.body)
   res.json({
@@ -33,6 +34,7 @@ router.post("/register", async(req,res)=>{
 
 router.post("/login", async(req,res)=>{
   const {email,password}=req.body;
+
   const client = await mongoClient.connect(dbUrl)
   try {
     const db= client.db("b19we");
@@ -43,9 +45,11 @@ router.post("/login", async(req,res)=>{
       })
     }else{
       const compare = await hashCompare(password,user.password);
+      console.log("compare",compare)
       if(compare){
         const token = await createJWT({email,id:user._id,role:user.role});
-        res.json({token})
+        console.log(token)
+        res.json({token,user})
       }else{
         res.json({
           message:"Wrong password"
@@ -73,12 +77,6 @@ router.get("/get-users", async(req,res)=>{
   }finally{
       client.close();
   }
-})
-
-router.post("/products",async(req,res)=>{
-    res.json({
-      message:"products"
-    })
 })
 
 

@@ -11,7 +11,9 @@ const productsRouter = require('./routes/products');
 var app = express();
 
 const cors = require("cors");
-app.use(cors());
+app.use(cors({
+  origin:"*"
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
